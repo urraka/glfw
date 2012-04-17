@@ -1137,6 +1137,10 @@ void _glfwPlatformWaitEvents(void)
     _glfwPlatformPollEvents();
 }
 
+void _glfwPlatformSetTouchInput(_GLFWwindow* window, int enabled)
+{
+}
+
 void _glfwPlatformSetCursorPos(_GLFWwindow* window, double x, double y)
 {
     // Store the new position so it can be recognized later
