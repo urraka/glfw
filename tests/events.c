@@ -40,6 +40,8 @@
 #include <locale.h>
 
 // These must match the input mode defaults
+
+static GLboolean touchinput = GL_FALSE;
 static GLboolean closeable = GL_TRUE;
 
 // Event index
@@ -360,6 +362,15 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
     switch (key)
     {
+        case GLFW_KEY_T:
+        {
+            touchinput = !touchinput;
+            glfwSetInputMode(window, GLFW_TOUCH, touchinput);
+
+            printf("(( touch input %s ))\n", touchinput ? "enabled" : "disabled");
+            break;
+        }
+
         case GLFW_KEY_C:
         {
             closeable = !closeable;
