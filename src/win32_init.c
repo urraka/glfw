@@ -103,10 +103,10 @@ static GLboolean initLibraries(void)
     _glfw.win32.user32.UnregisterTouchWindow = (UNREGISTERTOUCHWINDOW_T)
         GetProcAddress(_glfw.win32.user32.instance, "UnregisterTouchWindow");
 
-    if (_glfw.win32.touch.GetTouchInputInfo &&
-        _glfw.win32.touch.CloseTouchInputHandle &&
-        _glfw.win32.touch.RegisterTouchWindow &&
-        _glfw.win32.touch.UnregisterTouchWindow)
+    if (_glfw.win32.user32.GetTouchInputInfo &&
+        _glfw.win32.user32.CloseTouchInputHandle &&
+        _glfw.win32.user32.RegisterTouchWindow &&
+        _glfw.win32.user32.UnregisterTouchWindow)
     {
         _glfw.win32.touch.available = GL_TRUE;
     }

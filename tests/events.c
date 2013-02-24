@@ -190,6 +190,8 @@ static const char* get_action_name(int action)
             return "released";
         case GLFW_REPEAT:
             return "repeated";
+        case GLFW_MOVE:
+            return "moved";
     }
 
     return "caused unknown action";
@@ -417,21 +419,13 @@ void monitor_callback(GLFWmonitor* monitor, int event)
     }
 }
 
-static void touch_callback(GLFWwindow* window, int touch, int action)
+static void touch_callback(GLFWwindow* window, int touch, int action, double x, double y)
 {
-    printf("%08x at %0.3f: Touch %i %s\n",
+    printf("%08x at %0.3f: Touch %i %s position %f %f\n",
            counter++,
            glfwGetTime(),
            touch,
-           get_action_name(action));
-}
-
-static void touch_pos_callback(GLFWwindow* window, int touch, double x, double y)
-{
-    printf("%08x at %0.3f: Touch %i position: %f %f\n",
-           counter++,
-           glfwGetTime(),
-           touch,
+           get_action_name(action),
            x, y);
 }
 
@@ -474,7 +468,6 @@ int main(void)
     glfwSetKeyCallback(window, key_callback);
     glfwSetCharCallback(window, char_callback);
     glfwSetTouchCallback(window, touch_callback);
-    glfwSetTouchPosCallback(window, touch_pos_callback);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
