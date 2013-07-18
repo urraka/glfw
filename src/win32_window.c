@@ -656,8 +656,25 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg,
 
         case WM_SIZE:
         {
-            if (window->cursorMode == GLFW_CURSOR_DISABLED)
+            if (_glfw.focusedWindow != window && window->win32.handle == GetForegroundWindow())
+            {
+                // The window was focused
+
+                if (window->cursorMode == GLFW_CURSOR_DISABLED)
+                    captureCursor(window);
+                else if (window->cursorMode == GLFW_CURSOR_HIDDEN)
+                    hideCursor(window);
+
+                if (window->monitor)
+                    _glfwSetVideoMode(window->monitor, &window->videoMode);
+
+                _glfwInputWindowFocus(window, TRUE);
+                _glfwInputWindowIconify(window, FALSE);
+            }
+            else if (window->cursorMode == GLFW_CURSOR_DISABLED && _glfw.focusedWindow == window)
+            {
                 updateClipRect(window);
+            }
 
             _glfwInputFramebufferSize(window, LOWORD(lParam), HIWORD(lParam));
             _glfwInputWindowSize(window, LOWORD(lParam), HIWORD(lParam));
@@ -666,7 +683,7 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg,
 
         case WM_MOVE:
         {
-            if (window->cursorMode == GLFW_CURSOR_DISABLED)
+            if (window->cursorMode == GLFW_CURSOR_DISABLED && _glfw.focusedWindow == window)
                 updateClipRect(window);
 
             _glfwInputWindowPos(window, LOWORD(lParam), HIWORD(lParam));
