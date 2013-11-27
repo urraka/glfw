@@ -1230,8 +1230,9 @@ GLFWAPI void _glfwPlatformSetCursor(_GLFWwindow* window, _GLFWcursor* cursor)
 {
     _GLFWcursor* prev = window->cursor;
 
-    if ((window->win32.cursorInside && window->cursorMode == GLFW_CURSOR_NORMAL) ||
-        (prev != NULL && prev != cursor && GetCursor() == prev->win32.handle))
+    if ((_glfw.focusedWindow == window && window->win32.cursorInside &&
+         window->cursorMode == GLFW_CURSOR_NORMAL) || (prev != NULL && prev != cursor &&
+         GetCursor() == prev->win32.handle))
     {
         if (cursor)
             SetCursor(cursor->win32.handle);
