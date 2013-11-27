@@ -573,6 +573,14 @@ typedef struct GLFWmonitor GLFWmonitor;
  */
 typedef struct GLFWwindow GLFWwindow;
 
+/*! @brief Opaque cursor object.
+ *
+ *  Opaque cursor object.
+ *
+ *  @ingroup cursor
+ */
+typedef struct GLFWcursor GLFWcursor;
+
 /*! @brief The function signature for error callbacks.
  *
  *  This is the function signature for error callback functions.
@@ -1730,6 +1738,10 @@ GLFWAPI void glfwPollEvents(void);
  *  @ingroup window
  */
 GLFWAPI void glfwWaitEvents(void);
+
+GLFWAPI GLFWcursor* glfwCreateCursor(int width, int height, int cx, int cy, int format, const void* data);
+GLFWAPI void glfwDestroyCursor(GLFWcursor* cursor);
+GLFWAPI void glfwSetCursor(GLFWwindow* window, GLFWcursor* cursor);
 
 /*! @brief Returns the value of an input option for the specified window.
  *
