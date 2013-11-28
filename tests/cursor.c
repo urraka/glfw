@@ -1,5 +1,5 @@
 //========================================================================
-// Mouse cursor accuracy test
+// Cursor & input mode tests
 // Copyright (c) Camilla Berglund <elmindreda@elmindreda.org>
 //
 // This software is provided 'as-is', without any express or implied

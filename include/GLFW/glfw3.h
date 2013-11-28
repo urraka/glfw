@@ -1739,10 +1739,6 @@ GLFWAPI void glfwPollEvents(void);
  */
 GLFWAPI void glfwWaitEvents(void);
 
-GLFWAPI GLFWcursor* glfwCreateCursor(int width, int height, int cx, int cy, int format, const void* data);
-GLFWAPI void glfwDestroyCursor(GLFWcursor* cursor);
-GLFWAPI void glfwSetCursor(GLFWwindow* window, GLFWcursor* cursor);
-
 /*! @brief Returns the value of an input option for the specified window.
  *
  *  @param[in] window The window to query.
@@ -1884,6 +1880,50 @@ GLFWAPI void glfwGetCursorPos(GLFWwindow* window, double* xpos, double* ypos);
  *  @ingroup input
  */
 GLFWAPI void glfwSetCursorPos(GLFWwindow* window, double xpos, double ypos);
+
+/*! @brief Creates a cursor.
+ *
+ *  @param[in] width The desired cursor width.
+ *  @param[in] height The desired cursor height.
+ *  @param[in] xhot The desired x-coordinate of the cursor hotspot.
+ *  @param[in] yhot The desired y-coordinate of the cursor hotspot.
+ *  @param[in] format Not used.
+ *  @param[in] data The cursor image data in RGBA8 format, packed in rows from
+ *  top to bottom.
+ *
+ *  @return A new cursor ready to use or `NULL` if an error occurred. If you
+ *  don't destroy the cursor by calling `glfwDestroyCursor` it will be destroyed
+ *  automatically by `GLFW` on termination.
+ *
+ *  @note This function may only be called from the main thread.
+ *
+ *  @ingroup input
+ */
+GLFWAPI GLFWcursor* glfwCreateCursor(int width, int height, int xhot, int yhot, int format, const void* data);
+
+/*! @brief Destroys a cursor.
+ *
+ *  This function destroys a cursor previously created by a call to
+ *  `glfwCreateCursor`. `GLFW` will destroy all cursors automatically on
+ *  termination.
+ *
+ *  @param[in] cursor The cursor to destroy.
+ *
+ *  @note This function may only be called from the main thread.
+ *
+ *  @ingroup input
+ */
+GLFWAPI void glfwDestroyCursor(GLFWcursor* cursor);
+
+/*! @brief Sets the cursor for a given window.
+ *
+ *  @param[in] window The window to set the cursor for.
+ *  @param[in] cursor The cursor to change to, or `NULL` to switch back to the
+ *  default system cursor.
+ *
+ *  @ingroup input
+ */
+GLFWAPI void glfwSetCursor(GLFWwindow* window, GLFWcursor* cursor);
 
 /*! @brief Sets the key callback.
  *
