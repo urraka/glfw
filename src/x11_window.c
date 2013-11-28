@@ -1222,9 +1222,8 @@ void _glfwPlatformSetCursorMode(_GLFWwindow* window, int mode)
     }
 }
 
-GLFWAPI int _glfwPlatformCreateCursor(_GLFWcursor* cursor,
-                                      int width, int height, int cx, int cy,
-                                      int format, const void* data)
+int _glfwPlatformCreateCursor(_GLFWcursor* cursor, int width, int height, int cx, int cy,
+                              int format, const void* data)
 {
     XcursorImage* cursorImage;
     XcursorPixel* buffer;
@@ -1254,12 +1253,12 @@ GLFWAPI int _glfwPlatformCreateCursor(_GLFWcursor* cursor,
     return GL_TRUE;
 }
 
-GLFWAPI void _glfwPlatformDestroyCursor(_GLFWcursor* cursor)
+void _glfwPlatformDestroyCursor(_GLFWcursor* cursor)
 {
     XFreeCursor(_glfw.x11.display, cursor->x11.handle);
 }
 
-GLFWAPI void _glfwPlatformSetCursor(_GLFWwindow* window, _GLFWcursor* cursor)
+void _glfwPlatformSetCursor(_GLFWwindow* window, _GLFWcursor* cursor)
 {
     if (window->cursorMode == GLFW_CURSOR_NORMAL)
     {

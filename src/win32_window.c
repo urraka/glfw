@@ -1156,9 +1156,8 @@ void _glfwPlatformSetCursorMode(_GLFWwindow* window, int mode)
     }
 }
 
-GLFWAPI int _glfwPlatformCreateCursor(_GLFWcursor* cursor,
-                                      int width, int height, int cx, int cy,
-                                      int format, const void* data)
+int _glfwPlatformCreateCursor(_GLFWcursor* cursor, int width, int height, int cx, int cy,
+                              int format, const void* data)
 {
     HDC hdc;
     HBITMAP hBitmap, hMonoBitmap;
@@ -1219,12 +1218,12 @@ GLFWAPI int _glfwPlatformCreateCursor(_GLFWcursor* cursor,
     return GL_TRUE;
 }
 
-GLFWAPI void _glfwPlatformDestroyCursor(_GLFWcursor* cursor)
+void _glfwPlatformDestroyCursor(_GLFWcursor* cursor)
 {
     DestroyIcon((HICON) cursor->win32.handle);
 }
 
-GLFWAPI void _glfwPlatformSetCursor(_GLFWwindow* window, _GLFWcursor* cursor)
+void _glfwPlatformSetCursor(_GLFWwindow* window, _GLFWcursor* cursor)
 {
     _GLFWcursor* prev = window->cursor;
 
