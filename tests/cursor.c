@@ -190,6 +190,12 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     }
 }
 
+static void refresh_callback(GLFWwindow* window)
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    glfwSwapBuffers(window);
+}
+
 int main(void)
 {
     glfwSetErrorCallback(error_callback);
@@ -205,12 +211,16 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
+    glfwSetWindowRefreshCallback(window, refresh_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetKeyCallback(window, key_callback);
 
     glfwMakeContextCurrent(window);
 
     key_callback(window, GLFW_KEY_H, 0, GLFW_PRESS, 0);
+
+    glClear(GL_COLOR_BUFFER_BIT);
+    glfwSwapBuffers(window);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -229,8 +239,6 @@ int main(void)
             }
         }
 
-        glClear(GL_COLOR_BUFFER_BIT);
-        glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
