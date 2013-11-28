@@ -1223,10 +1223,8 @@ void _glfwPlatformSetCursorMode(_GLFWwindow* window, int mode)
 }
 
 GLFWAPI int _glfwPlatformCreateCursor(_GLFWcursor* cursor,
-                                      int width, int height,
-                                      int cx, int cy,
-                                      int format,
-                                      const void* data)
+                                      int width, int height, int cx, int cy,
+                                      int format, const void* data)
 {
     XcursorImage* cursorImage;
     XcursorPixel* buffer;
@@ -1269,6 +1267,8 @@ GLFWAPI void _glfwPlatformSetCursor(_GLFWwindow* window, _GLFWcursor* cursor)
             XDefineCursor(_glfw.x11.display, window->x11.handle, cursor->x11.handle);
         else
             XUndefineCursor(_glfw.x11.display, window->x11.handle);
+
+        XFlush(_glfw.x11.display);
     }
 }
 

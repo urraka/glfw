@@ -1157,10 +1157,8 @@ void _glfwPlatformSetCursorMode(_GLFWwindow* window, int mode)
 }
 
 GLFWAPI int _glfwPlatformCreateCursor(_GLFWcursor* cursor,
-                                      int width, int height,
-                                      int cx, int cy,
-                                      int format,
-                                      const void* data)
+                                      int width, int height, int cx, int cy,
+                                      int format, const void* data)
 {
     HDC hdc;
     HBITMAP hBitmap, hMonoBitmap;
