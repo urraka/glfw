@@ -37,7 +37,8 @@ static int W = 640;
 static int H = 480;
 static int delay = 0;
 
-static GLFWwindow* window = NULL;
+static GLFWwindow* windows[2] = {NULL, NULL};
+static GLFWwindow* activeWindow = NULL;
 static GLFWcursor* cursor = NULL;
 
 static struct { int key; double time; } commands[] = {
@@ -52,6 +53,13 @@ static struct { int key; double time; } commands[] = {
 };
 
 static int CommandCount = sizeof(commands) / sizeof(commands[0]);
+
+static struct { int w, h; } cursorSize[] = {
+    {24, 24}, {13, 37}, {5, 53}, {43, 64}, {300, 300}
+};
+
+static int SizeCount = sizeof(cursorSize) / sizeof(cursorSize[0]);
+static int currentSize = 0;
 
 static void command_callback(int key)
 {
@@ -75,7 +83,8 @@ static void command_callback(int key)
         {
             if (cursor == NULL)
             {
-                int w = 32, h = 32;
+                int w = cursorSize[currentSize].w;
+                int h = cursorSize[currentSize].h;
                 int x, y, i = 0;
                 unsigned char image[4 * w * h];
 
@@ -85,12 +94,14 @@ static void command_callback(int key)
                     {
                         image[i++] = 0xFF;
                         image[i++] = 0;
-                        image[i++] = 255 * y / 32;
-                        image[i++] = 255 * x / 32;
+                        image[i++] = 255 * y / h;
+                        image[i++] = 255 * x / w;
                     }
                 }
 
                 cursor = glfwCreateCursor(w, h, w / 2, h / 2, 0, image);
+
+                currentSize = (currentSize + 1) % SizeCount;
             }
         }
         break;
@@ -108,7 +119,7 @@ static void command_callback(int key)
         case GLFW_KEY_S:
         {
             if (cursor != NULL)
-                glfwSetCursor(window, cursor);
+                glfwSetCursor(activeWindow, cursor);
             else
                 printf("The cursor is not created\n");
         }
@@ -116,25 +127,25 @@ static void command_callback(int key)
 
         case GLFW_KEY_N:
         {
-            glfwSetCursor(window, NULL);
+            glfwSetCursor(activeWindow, NULL);
         }
         break;
 
         case GLFW_KEY_1:
         {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            glfwSetInputMode(activeWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         }
         break;
 
         case GLFW_KEY_2:
         {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+            glfwSetInputMode(activeWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
         }
         break;
 
         case GLFW_KEY_3:
         {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwSetInputMode(activeWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
         break;
     }
@@ -151,6 +162,14 @@ static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     H = height;
 
     glViewport(0, 0, W, H);
+}
+
+static void refresh_callback(GLFWwindow* window)
+{
+    glfwMakeContextCurrent(window);
+    glClearColor(0.0f, window == activeWindow ? 0.8f : 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glfwSwapBuffers(window);
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -190,39 +209,53 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     }
 }
 
-static void refresh_callback(GLFWwindow* window)
+static void focus_callback(GLFWwindow* window, int focused)
 {
-    glClear(GL_COLOR_BUFFER_BIT);
-    glfwSwapBuffers(window);
+    if (focused)
+    {
+        activeWindow = window;
+        refresh_callback(windows[0]);
+        refresh_callback(windows[1]);
+    }
 }
 
 int main(void)
 {
+    int i;
+    GLboolean running = GL_TRUE;
+
     glfwSetErrorCallback(error_callback);
 
     if (!glfwInit())
         exit(EXIT_FAILURE);
 
-    window = glfwCreateWindow(W, H, "Cursor testing", NULL, NULL);
-
-    if (!window)
+    for (i = 0; i < 2; i++)
     {
-        glfwTerminate();
-        exit(EXIT_FAILURE);
+        windows[i] = glfwCreateWindow(W, H, "Cursor testing", NULL, NULL);
+
+        if (!windows[i])
+        {
+            glfwTerminate();
+            exit(EXIT_FAILURE);
+        }
+
+        glfwSetWindowPos(windows[i], 100 + (i & 1) * (W + 50), 100);
+
+        glfwSetWindowRefreshCallback(windows[i], refresh_callback);
+        glfwSetFramebufferSizeCallback(windows[i], framebuffer_size_callback);
+        glfwSetKeyCallback(windows[i], key_callback);
+        glfwSetWindowFocusCallback(windows[i], focus_callback);
+
+        glfwMakeContextCurrent(windows[i]);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glfwSwapBuffers(windows[i]);
     }
 
-    glfwSetWindowRefreshCallback(window, refresh_callback);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetKeyCallback(window, key_callback);
+    activeWindow = windows[0];
 
-    glfwMakeContextCurrent(window);
+    key_callback(NULL, GLFW_KEY_H, 0, GLFW_PRESS, 0);
 
-    key_callback(window, GLFW_KEY_H, 0, GLFW_PRESS, 0);
-
-    glClear(GL_COLOR_BUFFER_BIT);
-    glfwSwapBuffers(window);
-
-    while (!glfwWindowShouldClose(window))
+    while (running)
     {
         if (delay)
         {
@@ -238,6 +271,8 @@ int main(void)
                 }
             }
         }
+
+        running = !(glfwWindowShouldClose(windows[0]) || glfwWindowShouldClose(windows[1]));
 
         glfwPollEvents();
     }
